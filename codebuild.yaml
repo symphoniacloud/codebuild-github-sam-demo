@@ -8,7 +8,7 @@ Parameters:
 
   SourceLocation:
     Type: String
-    Default: https://github.com/symphoniacloud/lambda-codebuild-cd-private.git
+    Default: https://github.com/symphoniacloud/codebuild-github-sam-demo.git
 
   CodeBuildProjectName:
     Type: String

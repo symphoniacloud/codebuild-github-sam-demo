@@ -61,3 +61,7 @@ CodeBuild has costs (see https://aws.amazon.com/codebuild/pricing/) but includes
 ## Teardown
 
 To tear down the demo delete the application stack in Cloudformation, and then the CodeBuild stack. Make sure to do so in that order.
+
+Copyright 2019 Symphonia LLC
+
+https://www.symphonia.io/

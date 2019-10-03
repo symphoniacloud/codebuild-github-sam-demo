@@ -62,6 +62,27 @@ CodeBuild has costs (see https://aws.amazon.com/codebuild/pricing/) but includes
 
 To tear down the demo delete the application stack in Cloudformation, and then the CodeBuild stack. Make sure to do so in that order.
 
+## Quick discussion - CodeBuild vs CodePipeline for deployment?
+
+A key difference between CodeBuild and CodePipeline is that CodeBuild will *always* (subject to account limits) perform builds concurrently, for any two close (in time) committed updates to source control. 
+CodePipeline will also run executions concurrently, however it will *never* have one _stage_ active for more than one pipeline execution at any one time, and instead will "queue up" executions behind a busy stage, merging mutliple stalled executions (dropping the older ones) should multiple executions be waiting. 
+
+Typically this means that CodeBuild is great for pre-production, and any other ephemeral (non-named) environment.
+You can run 10 builds all in parallel, all using their own resources.
+In other words it's a good fit for Continuous Integration.
+Another reason to use CodeBuild for pre-production is that it has [branch / PR support](https://docs.aws.amazon.com/codebuild/latest/userguide/sample-github-pull-request.html) 
+
+On the other hand CodePipeline is typically better for production deployment (and Continuous Delivery / Continuous Deployment), and/or when you want to run specific tests as part of a deployment pipeline against a version of your application you know isn't in the middle of being deployed (since you can bundle, for example, "deploy" and "smoke test", into one atomic stage in CodePipeline.)
+
+And remember that you can always encapsulate CodeBuild within CodePipeline too.
+
+## TODO
+
+* PR / branch support
+* Notifications?
+* Test Metrics?
+* More description of how this works?
+
 Copyright 2019 Symphonia LLC
 
 https://www.symphonia.io/

@@ -1,0 +1,80 @@
+AWSTemplateFormatVersion: 2010-09-09
+Description: Lambda CodeBuild CD
+
+Parameters:
+  GitHubToken:
+    Type: String
+    NoEcho: true
+
+  SourceLocation:
+    Type: String
+    Default: https://github.com/symphoniacloud/lambda-codebuild-cd-private.git
+
+  CodeBuildProjectName:
+    Type: String
+    Default: CodeBuildGithubLambda
+
+  AppStackName:
+    Type: String
+    Default: codebuild-github-example-app
+
+Resources:
+  SamBucket:
+    Type: AWS::S3::Bucket
+    Properties:
+      LifecycleConfiguration:
+        Rules:
+          - ExpirationInDays: 2
+            Status: Enabled
+
+  CodeBuildSourceCredential:
+    Type: AWS::CodeBuild::SourceCredential
+    Properties:
+      Token: !Ref GitHubToken
+      ServerType: GITHUB
+      AuthType: PERSONAL_ACCESS_TOKEN
+
+  CodeBuildProject:
+    Type: AWS::CodeBuild::Project
+    DependsOn: CodeBuildRole
+    Properties:
+      Name: !Ref CodeBuildProjectName
+      Source:
+        Auth:
+          Resource: !Ref CodeBuildSourceCredential
+          Type: OAUTH
+        Type: GITHUB
+        Location: !Ref SourceLocation
+        BuildSpec: buildspec.yml
+      Triggers:
+        Webhook: true
+      ServiceRole: !Ref CodeBuildRole
+      Environment:
+        ComputeType: BUILD_GENERAL1_SMALL
+        Image: aws/codebuild/standard:2.0
+        Type: LINUX_CONTAINER
+        EnvironmentVariables:
+          - Name: SAM_BUCKET
+            Value: !Ref SamBucket
+          - Name: APP_STACK_NAME
+            Value: !Ref AppStackName
+      Cache:
+        Type: LOCAL
+        Modes:
+          - LOCAL_CUSTOM_CACHE
+      Artifacts:
+        Type: NO_ARTIFACTS
+      BadgeEnabled: true
+
+  CodeBuildRole:
+    Type: AWS::IAM::Role
+    Properties:
+      AssumeRolePolicyDocument:
+        Version: "2012-10-17"
+        Statement:
+          Effect: Allow
+          Principal:
+            Service: codebuild.amazonaws.com
+          Action: sts:AssumeRole
+      ManagedPolicyArns:
+        - arn:aws:iam::aws:policy/AdministratorAccess #TODO: Reduce permissions

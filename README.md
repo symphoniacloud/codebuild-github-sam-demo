@@ -70,11 +70,16 @@ CodePipeline will also run executions concurrently, however it will *never* have
 Typically this means that CodeBuild is great for pre-production, and any other ephemeral (non-named) environment.
 You can run 10 builds all in parallel, all using their own resources.
 In other words it's a good fit for Continuous Integration.
-Another reason to use CodeBuild for pre-production is that it has [branch / PR support](https://docs.aws.amazon.com/codebuild/latest/userguide/sample-github-pull-request.html) 
+Another reason to use CodeBuild for pre-production is that it has [branch / PR support](https://docs.aws.amazon.com/codebuild/latest/userguide/sample-github-pull-request.html). 
 
 On the other hand CodePipeline is typically better for production deployment (and Continuous Delivery / Continuous Deployment), and/or when you want to run specific tests as part of a deployment pipeline against a version of your application you know isn't in the middle of being deployed (since you can bundle, for example, "deploy" and "smoke test", into one atomic stage in CodePipeline.)
 
 And remember that you can always encapsulate CodeBuild within CodePipeline too.
+As such it might often make sense for projects to use both CodeBuild and CodePipeline as top-level entities, for different workflows, in other words:
+
+* Use standalone CodeBuild for CI & automatic PR validation
+* Use CodePipeline with _embedded_ CodeBuild for CD
+* Consider using the same "buildspec" for both CI and CD versions of CodeBuild
 
 ## TODO
 

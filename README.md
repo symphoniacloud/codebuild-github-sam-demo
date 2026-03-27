@@ -1,5 +1,7 @@
 # CodeBuild Demo with Github, Maven, SAM and Lambda
 
+**THIS REPOSITORY IS ARCHIVED AND UNMAINTANED. IT MAY NO LONGER WORK WITH RELEVANT DEPENDENCIES AND SERVICES. IT MAY SPECIFY INSECURE LIBRARY DEPENDENCIES.**
+
 AWS offer two overlapping tools that help with Continuous Integration (CI) and Continuous Delivery / Continuous Deployment (CD) - [CodeBuild](https://aws.amazon.com/codebuild/) and [CodePipeline](https://aws.amazon.com/codepipeline/) .
 To read an introduction to these two technologies, please see our primer [here](https://blog.symphonia.io/continuous-integration-continuous-delivery-on-aws-9b0d9cfe2f76).
 
